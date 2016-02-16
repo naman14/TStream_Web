@@ -1,39 +1,31 @@
-
 var ws;
-var byteArray;
-var context;
 
-function WebSocketTest()
-{
-  if ("WebSocket" in window)
-  {
+function connect() {
+    if ("WebSocket" in window) {
 
-    ws = new WebSocket("ws://" + document.getElementById('ipaddr').value + "/connect");
+        ws = new WebSocket("ws://" + document.getElementById('ipaddr').value + "/connect");
 
-    ws.onopen = function()
-    {
-     console.log("Connection open");
-    };
+        ws.onopen = function () {
+            console.log("Connection open");
+        };
 
-    ws.onmessage = function (evt)
-    {
+        ws.onmessage = function (evt) {
 
-      if (evt.data.indexOf("URL") > -1) {
-        var x = document.getElementById("audio");
-        x.src = evt.data.substring(6,evt.data.length);
-        x.play();
-      }
-    };
+            if (evt.data.indexOf("MEDIA") > -1) {
+                var audio = document.getElementById("audio");
+                var obj = JSON.parse(evt.data.substring(8, evt.data.length));
+                audio.src = obj.URL;
+                audio.play();
+            }
+        };
 
-    ws.onclose = function()
-    {
-     console.log("Connection closed");
-    };
-  }
+        ws.onclose = function () {
+            console.log("Connection closed");
+        };
+    }
 
-  else
-  {
-    alert("WebSocket NOT supported by your Browser!");
-  }
+    else {
+        alert("WebSocket NOT supported by your Browser!");
+    }
 }
 
